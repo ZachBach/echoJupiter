@@ -13,3 +13,4 @@ A React + Vite + Three.js shader experiment exploring interference, emotion-driv
 ```bash
 npm install
 npm run dev
+# echoJupiter
