@@ -1,17 +1,20 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
+import * as THREE from 'three'
 
-export default function AtmosphereShell({ emotion, runtime }) {
+export default function AtmosphereShell({ emotionState, runtime }) {
     const ref = useRef()
 
     const uniforms = useMemo(
         () => ({
             uTime: { value: 0 },
-            uEmotion: { value: emotion },
+            uEmotion: { value: emotionState.value },
             uMorph: { value: 0 },
-            uCoherence: { value: 0.2 }
+            uCoherence: { value: 0.2 },
+            uWarmth: { value: emotionState.warmth },
+            uPulseState: { value: emotionState.pulse }
         }),
-        [emotion]
+        [emotionState]
     )
 
     useFrame(({ clock }) => {
@@ -21,9 +24,11 @@ export default function AtmosphereShell({ emotion, runtime }) {
         const r = runtime.current
 
         ref.current.material.uniforms.uTime.value = t
-        ref.current.material.uniforms.uEmotion.value = emotion
+        ref.current.material.uniforms.uEmotion.value = r.emotion
         ref.current.material.uniforms.uMorph.value = r.morph
         ref.current.material.uniforms.uCoherence.value = r.coherence
+        ref.current.material.uniforms.uWarmth.value = r.warmth
+        ref.current.material.uniforms.uPulseState.value = r.pulse
 
         ref.current.rotation.y -= 0.001
         ref.current.rotation.z = Math.sin(t * 0.12) * 0.08
@@ -38,7 +43,8 @@ export default function AtmosphereShell({ emotion, runtime }) {
                 fragmentShader={fragmentShader}
                 transparent={true}
                 depthWrite={false}
-                side={2}
+                side={THREE.BackSide}
+                toneMapped={false}
             />
         </mesh>
     )
@@ -76,6 +82,8 @@ uniform float uTime;
 uniform float uEmotion;
 uniform float uMorph;
 uniform float uCoherence;
+uniform float uWarmth;
+uniform float uPulseState;
 
 varying vec3 vNormal;
 varying vec3 vWorldPos;
@@ -85,7 +93,7 @@ void main() {
   vec3 viewDir = normalize(cameraPosition - vWorldPos);
 
   float fresnel = pow(1.0 - max(dot(normalize(vNormal), viewDir), 0.0), 3.5);
-  float pulse = sin(uTime * (1.8 + uEmotion * 3.0)) * 0.5 + 0.5;
+  float pulse = sin(uTime * (1.8 + uPulseState * 3.5)) * 0.5 + 0.5;
   float wave = sin(vUv.y * 36.0 - uTime * 1.4) * 0.5 + 0.5;
 
   vec3 blue = vec3(0.22, 0.45, 1.0);
@@ -93,12 +101,14 @@ void main() {
   vec3 amber = vec3(1.0, 0.55, 0.18);
 
   vec3 edgeColor = mix(blue, cyan, uEmotion * 0.7);
-  edgeColor = mix(edgeColor, amber, uMorph * 0.35);
+  edgeColor = mix(edgeColor, amber, uWarmth * 0.5 + uMorph * 0.25);
 
-  float alpha = fresnel * (0.18 + pulse * 0.14 + wave * 0.08);
+  float alpha = fresnel * (0.16 + pulse * 0.16 + wave * 0.08);
   alpha *= 0.65 + uMorph * 0.45;
   alpha *= 0.7 + (1.0 - uCoherence) * 0.4;
 
-  gl_FragColor = vec4(edgeColor, alpha);
+  vec3 bloomColor = edgeColor * (1.15 + pulse * 0.9 + uMorph * 0.45);
+
+  gl_FragColor = vec4(bloomColor, alpha);
 }
 `
