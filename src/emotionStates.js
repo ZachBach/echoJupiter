@@ -63,6 +63,6 @@ export const EMOTION_STATES = [
     turbulence: 0.18,
     coherenceBias: 0.95,
     stormBias: 0.35,
-    particleSpeed: 0.5
+    particleSpeed: 0
   }
 ]

@@ -10,6 +10,11 @@ It explores how visual structure can emerge from layered interference, modulatio
 At its core, the project treats the screen as a dynamic signal surface—where wave interaction, state, and rhythm generate evolving visual behavior in real time.
 
 
+> **Photosensitivity Warning**
+> This project contains flashing lights, pulsing neon effects, bloom, and high-contrast animated imagery that may not be suitable for people with photosensitivity.
+
+
+
 ---
 
 ##  Overview
