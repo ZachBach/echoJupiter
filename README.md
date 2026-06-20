@@ -1,9 +1,14 @@
+
 # echoJupiter
 
 > **Signal emerging from noise through interference, modulation, and time.**
 
-A real-time interactive shader system exploring how structure emerges from interference, modulation, and time.  
-Built with **React**, **Vite**, and **React Three Fiber**, it turns abstract input into a living visual field of motion, intensity, and neon pulse.
+echoJupiter is a real-time interactive shader system built with **React**, **Vite**, and **React Three Fiber**.  
+
+It explores how visual structure can emerge from layered interference, modulation, and time-based energy, transforming abstract input into a living field of motion, color, and neon pulse.
+
+At its core, the project treats the screen as a dynamic signal surface—where wave interaction, state, and rhythm generate evolving visual behavior in real time.
+
 
 ---
 
